@@ -8,7 +8,6 @@ class PolynomialRegression():
         self.predictorX = (108, 115,106,97,95,91,97,83,83,78,54,67,56,53,61,115,81,78,30,45,99,32,25,28,90,89)
         self.responseY  = (95, 96,95,97,93,94,95,93,92,86,73,80,65,69,77,96,87,89,60,63,95,61,55,56,94,93)
 
-
     def initXMatrix(self):
         # Initialize design matrix X
         XMatrix = np.ones((len(self.predictorX), self.degree + 1))
@@ -62,8 +61,10 @@ class PolynomialRegression():
     
     # Predictions for polynomial regression  
     def Predict(self, predictionValues):
-
         predictionValues = np.array(predictionValues)
+        self.PredictionValues = 0
+        self.PredictionValues = predictionValues
+
         self.Params = self.BMatrix()
         predictions = 0
 
@@ -71,29 +72,41 @@ class PolynomialRegression():
             predictions = predictions + self.Params[i] * predictionValues ** i
 
         self.Predictions = np.array(predictions)
+
         return self.Predictions
+
+    def CalculateCoefficents(self):
+        linearYPred = self.Predict(self.predictorX)
+        self.CorrelationCoefficent = self.correlation_coefficient(SSBBCase.r_squared(linearYPred))
+        self.DeterminationCoefficent = self.r_squared(linearYPred)
 
     
     def PrintResults(self):
+        print("\nLinear regression equation")
+        print("\nMachine Efficiency =", end="")
 
-        print("Linear regression equation")
-        print("Machine Efficiency =", end="")
         for i in range(len(self.Params)):
-            print(f" {float(self.Params[i])} +", end="")
-        print(" Batch Size")
+            print(f" {float(self.Params[i])} ", end="")
+            print(f" Batch Size^{i} ", end="+")
 
-        print(f"Correlation coefficient = {self.correlation_coefficient(self.r_squared(self.Predictions))}")
-        print(f"Determination coefficient = {self.r_squared(self.Predictions)}\n")
-        print("Predictions of known values")
-
-
+        print(f"\nCorrelation coefficient = {self.CorrelationCoefficent}")
+        print(f"Determination coefficient = {self.DeterminationCoefficent}")
+        
+        
 # Values to predict
 predictionValues = (123,15,60)
 
 # Linear Regression
-SSBBCase = PolynomialRegression(1)
-predictions = SSBBCase.Predict(predictionValues)
+SSBBCase = PolynomialRegression(3)
+knownPred = SSBBCase.Predict(predictionValues)
+unknownPred = SSBBCase.Predict(predictionValues)
+SSBBCase.CalculateCoefficents()
 SSBBCase.PrintResults()
 
-for i in enumerate(predictions):
-    print(f"Batch Size = {predictionValues[i]}, Machine Efficiency = {predictions[i]}")
+print("\nPredictions for known values")
+for i in range(len(knownPred)):
+    print(f"Batch Size = {SSBBCase.predictorX[i]}, Machine Efficiency Predicted = {knownPred[i]}, Machine Efficiency = {SSBBCase.responseY[i]}")
+
+print("\nPredictions for unknown values")
+for i in range(len(unknownPred)):
+    print(f"Batch Size = {predictionValues[i]}, Machine Efficiency = {unknownPred[i]}")
