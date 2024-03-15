@@ -87,7 +87,10 @@ class PolynomialRegression():
 
         for i in range(len(self.Params)):
             print(f" {float(self.Params[i])} ", end="")
-            print(f" Batch Size^{i} ", end="+")
+            if(i == 1):
+                print("Batch Size", end=" ")
+            elif(i > 1):
+                print(f" Batch Size^{i} ", end="+")
 
         print(f"\nCorrelation coefficient = {self.CorrelationCoefficent}")
         print(f"Determination coefficient = {self.DeterminationCoefficent}")
